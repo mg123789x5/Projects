@@ -10,6 +10,36 @@
 
 ---
 ### 6. Client-Server Architecture. URI, URN, URL
+[Раскрытие URI, URL и URN](https://blog.logto.io/ru/raskrytie-uri-url-i-urn)
+[URI, URL, URN. Что это, чем отличаются](https://alekseev74.ru/lessons/show/http/uri-url-urn)
+
 - URI
 - URN
 - URL
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
