@@ -1,13 +1,16 @@
 ---
-tags:
-pealkiri: 
-author:
+pealkiri: "Java EE, Web Development: HTTP, Server, Servlet, HTML/CSS, JSP."
+url link: https://www.udemy.com/course/web-development-learnit/
+lühidalt: Learn Client-Server Architecture, TCP/IP, HTTP, Web Servers, Tomcat, HTML/CSS, Servlets, Web Filters, JSP, STL, Maven...
 algus: 2025.06.10
 lõpp: 2025..
-hinnang: pole
+tags:
+  - Java
+  - Servers
+  - WebDev
+  - Learning
 ---
-
-
+---
 ##### *Teemad:*
 - Web Development    
 - Client-server Architecture    
@@ -50,7 +53,12 @@ hinnang: pole
 - ChatGPT, Slack, Jira Integration via Java Spring Boot Web App
 - Create Web App via Spring Boot, ChatGPT, Jira, Slack for Project Management Operations Automation
 ---
-
-
 ##### *Kokkuvõte:*
 ==Tunded mõtted läbitud kursuse kohta?==
+
+---
+
+
+
+
+
