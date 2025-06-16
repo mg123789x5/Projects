@@ -27,7 +27,8 @@
 4. Включение светодиода для мониторинга L2TP соединения. 
 5. Настройка кнопки Mode (мод) для включения и отключения WiFI, на случай если нужен будет ночью.
 ----
-# MikroTik hAP ac2 простая быстрая настройка https://youtu.be/SZx1xQsFhms?si=EJ1F6JNQXyNcEbFb
+[MikroTik hAP ac2 простая быстрая настройка](https://youtu.be/SZx1xQsFhms?si=EJ1F6JNQXyNcEbFb)
+>change MAC address on interface: `interface ethernet set ether1 mac-address=XX:XX:XX:XX:XX:XX`
 
 # VLAN в Mikrotik https://youtu.be/RWwBZjlQN_o?si=NW9wTBMsMw2iU_-P
 
