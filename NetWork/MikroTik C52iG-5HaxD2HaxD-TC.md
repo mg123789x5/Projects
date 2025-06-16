@@ -29,5 +29,5 @@
 ----
 
 
-
+# VLAN в Mikrotik https://youtu.be/RWwBZjlQN_o?si=NW9wTBMsMw2iU_-P
 
