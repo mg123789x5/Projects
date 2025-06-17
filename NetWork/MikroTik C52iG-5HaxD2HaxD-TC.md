@@ -30,5 +30,21 @@
 [MikroTik hAP ac2 простая быстрая настройка](https://youtu.be/SZx1xQsFhms?si=EJ1F6JNQXyNcEbFb)
 >change MAC address on interface: `interface ethernet set ether1 mac-address=XX:XX:XX:XX:XX:XX`
 
-# VLAN в Mikrotik https://youtu.be/RWwBZjlQN_o?si=NW9wTBMsMw2iU_-P
+# [VLAN в Mikrotik](https://youtu.be/RWwBZjlQN_o?si=NW9wTBMsMw2iU_-P)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
