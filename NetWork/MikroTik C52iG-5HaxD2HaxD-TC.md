@@ -36,6 +36,7 @@
 [Mikrotik проброс портов для RDP доступа из внешки](https://youtu.be/vFmJOgE0Ckg?si=NdVVnSwfQQguzAYr)
 [Как настроить Wi-Fi на маршрутизаторе MikroTik](https://www.youtube.com/live/MkUZmapUbPw?si=C4lYQaUu5dZlhAjI)
 [Базовая настройка роутеров Mikrotik](https://youtu.be/Kb1R04PWScE?si=Ry3uFtGrzPHLMuM9)
+[Первоначальная настройка MIKROTIK с нуля: DNS, DHCP, NAT, статический и динамический IP](https://youtu.be/9BWbkvrpyZA?si=83e2bbbPRfnFvUP4)
 
 ---
 
