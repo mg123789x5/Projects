@@ -34,6 +34,8 @@
 [VLAN в Mikrotik](https://youtu.be/RWwBZjlQN_o?si=NW9wTBMsMw2iU_-P)
 [Базовая настройка MikroTik с нуля без лишнего](https://youtu.be/tJNP7gXUvKQ?si=krzeUOPknhDi7cu1)
 [Mikrotik проброс портов для RDP доступа из внешки](https://youtu.be/vFmJOgE0Ckg?si=NdVVnSwfQQguzAYr)
+[Как настроить Wi-Fi на маршрутизаторе MikroTik](https://www.youtube.com/live/MkUZmapUbPw?si=C4lYQaUu5dZlhAjI)
+[Базовая настройка роутеров Mikrotik](https://youtu.be/Kb1R04PWScE?si=Ry3uFtGrzPHLMuM9)
 
 ---
 
