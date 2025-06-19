@@ -43,7 +43,7 @@
 
 [Chateau LTE12 (2025)](https://mikrotik.com/product/chateau_lte12_2025#fndtn-gallery)
 [Chateau 5G R16](https://mikrotik.com/product/chateau5gr16)
-
+[ATL 5G R16](https://mikrotik.com/product/atl_5g_r16#fndtn-gallery)
 
 
 
