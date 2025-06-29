@@ -6,7 +6,7 @@ kanban-plugin: list
 
 ## **BackLog**
 
-- [x] Obsitian Setup
+- [ ] Obsitian Setup
 
 
 ## ToDo
