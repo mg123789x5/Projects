@@ -1,12 +1,13 @@
 ---
 
 kanban-plugin: list
+tags:
+  - DevOps
 
 ---
 
 ## **BackLog**
 
-- [x] Obsitian Setup
 
 
 ## ToDo
