@@ -5,10 +5,7 @@ lühidalt: Learn Client-Server Architecture, TCP/IP, HTTP, Web Servers, Tomcat, 
 algus: 2025.06.10
 lõpp: 2025..
 tags:
-  - Java
-  - Servers
-  - WebDev
-  - Learning
+  - projects
 ---
 ---
 ##### *Teemad:*
