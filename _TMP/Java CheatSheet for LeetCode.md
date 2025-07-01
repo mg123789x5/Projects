@@ -1,6 +1,6 @@
 
 
-# Java Data Structures Cheat Sheet for LeetCode
+# Java Data Structures
 
 ## 🔹 int[] — массив целых чисел
 ```java
