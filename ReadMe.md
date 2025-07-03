@@ -4,7 +4,7 @@
 | ----- | ----------------------------------------------- |
 | 1     | [[_start DevOps \| DevOps]]                     |
 | 2     | [[_start EclipseIDE \| Eclipse IDE]]            |
-| 3     | [[_start Java EE-WebDev \| Java EE, Web]]       |
+| 3     | [[_start Java NetProg\| Java EE, Web]]       |
 | 4     | [[_start Java Learning \| Java Learning]]       |
 | 5     | [[_start JUnit 5 Testing \| JUnit 5 Testing]]   |
 | 6     | [[_start NetWork \| NetWork]]                   |
