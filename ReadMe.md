@@ -1,19 +1,15 @@
 #projects
 
-|     | [[_start Java EE-WebDev \| Java EE, Web]] |
-| --- | ----------------------------------------- |
-|     | [[_start Java Learning \| Java Learning]] |
-|     | [[_start NetWork \| NetWork]]             |
-|     | [[_start DevOps \| DevOps]]               |
-|     |                                           |
-|     |                                           |
-
-
-
-
-
-
-
+| J.Nr. | Teemad:                                         |
+| ----- | ----------------------------------------------- |
+| 1     | [[_start DevOps \| DevOps]]                     |
+| 2     | [[_start EclipseIDE \| Eclipse IDE]]            |
+| 3     | [[_start Java EE-WebDev \| Java EE, Web]]       |
+| 4     | [[_start Java Learning \| Java Learning]]       |
+| 5     | [[_start JUnit 5 Testing \| JUnit 5 Testing]]   |
+| 6     | [[_start NetWork \| NetWork]]                   |
+| 7     | [[_start PKI with OpenSSL \| PKI with OpenSSL]] |
+|       |                                                 |
 
 ---
 [AlgoMaster](https://algomaster.io)
