@@ -12,7 +12,7 @@
 | 6     | [[_start NetWork \| NetWork]]                    |
 | 7     | [[_start PKI with OpenSSL \| PKI with OpenSSL]]  |
 | 8     | [[_start Java EE-WebDev \| Java NetProg TCP/IP]] |
-|       | [[]]                                             |
+| 9     | [[_start Java MyPhotos \| Java EE - MyPhotos]]   |
 |       |                                                  |
 
 
