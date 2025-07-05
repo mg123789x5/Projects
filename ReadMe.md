@@ -1,19 +1,20 @@
-
+#projects 
 
 ---
 
-| J.Nr. | Teemad:                                          |
-| ----- | ------------------------------------------------ |
-| 1     | [[_start DevOps \| DevOps]]                      |
-| 2     | [[_start EclipseIDE \| Eclipse IDE]]             |
-| 3     | [[_start Java NetProg\| Java EE, Web]]           |
-| 4     | [[_start Java Learning \| Java Learning]]        |
-| 5     | [[_start JUnit 5 Testing \| JUnit 5 Testing]]    |
-| 6     | [[_start NetWork \| NetWork]]                    |
-| 7     | [[_start PKI with OpenSSL \| PKI with OpenSSL]]  |
-| 8     | [[_start Java EE-WebDev \| Java NetProg TCP/IP]] |
-| 9     | [[_start Java MyPhotos \| Java EE - MyPhotos]]   |
-|       |                                                  |
+| J.Nr. | Teemad:                                                       |
+| ----- | ------------------------------------------------------------- |
+| 1     | [[_start DevOps \| DevOps]]                                   |
+| 2     | [[_start EclipseIDE \| Eclipse IDE]]                          |
+| 3     | [[_start Java NetProg\| Java EE, Web]]                        |
+| 4     | [[_start Java Learning \| Java Learning]]                     |
+| 5     | [[_start JUnit 5 Testing \| JUnit 5 Testing]]                 |
+| 6     | [[_start NetWork \| NetWork]]                                 |
+| 7     | [[_start PKI with OpenSSL \| PKI with OpenSSL]]               |
+| 8     | [[_start Java EE-WebDev \| Java NetProg TCP/IP]]              |
+| 9     | [[_start Java MyPhotos \| Java EE - MyPhotos]]                |
+| 10    | [[_start Docker и Docker Compose \| Docker и Docker Compose]] |
+|       |                                                               |
 
 
 ---
