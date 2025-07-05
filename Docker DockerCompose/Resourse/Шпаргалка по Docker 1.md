@@ -1,27 +1,21 @@
+#DockerCompose 
 
+#### Хорошая шпаргалка по докеру есть [тут](https://github.com/eon01/DockerCheatSheet) и [тут](https://dker.ru/docs/docker-engine/engine-reference/command-line-reference/docker-commands/)
 
-
-# Шпаргалка по Docker
-
-Оставлю тут. А то частенько забываю команды. Пусть будут перед глазами...  
-Да. Хорошая шпаргалка по докеру есть [тут](https://github.com/eon01/DockerCheatSheet) и [тут](https://dker.ru/docs/docker-engine/engine-reference/command-line-reference/docker-commands/)
-
-- [DOCKER RUN](https://devops.org.ru/docker-summary#d1)
-- [ПРОСТЫЕ ДЕЙСТВИЯ С КОНТЕЙНЕРАМИ](https://devops.org.ru/docker-summary#d2)
-- [ЗАПУСК И ОСТАНОВКА КОНТЕЙНЕРОВ](https://devops.org.ru/docker-summary#d3)
-- [ИНФОРМАЦИЯ О КОНТЕЙНЕРЕ](https://devops.org.ru/docker-summary#d4)
-- [РАБОТА С КОНТЕЙНЕРАМИ](https://devops.org.ru/docker-summary#d5)
-- [РАБОТА С REGISTRY](https://devops.org.ru/docker-summary#d6)
-- [РАБОТА С ОБРАЗАМИ](https://devops.org.ru/docker-summary#d7)
-- [РАБОТА С ТОМАМИ](https://devops.org.ru/docker-summary#d10)
-- [СЕТИ](https://devops.org.ru/docker-summary#d8)
-- [ЧИСТКА МУСОРА](https://devops.org.ru/docker-summary#d9)
-
+---
+- [[#DOCKER RUN]]
+- [[#ПРОСТЫЕ ДЕЙСТВИЯ С КОНТЕЙНЕРАМИ]]
+- [[#ЗАПУСК И ОСТАНОВКА КОНТЕЙНЕРОВ]]
+- [[#ИНФОРМАЦИЯ О КОНТЕЙНЕРЕ]]
+- [[#РАБОТА С КОНТЕЙНЕРАМИ]]
+- [[#РАБОТА С REGISTRY]]
+- [[#РАБОТА С ОБРАЗАМИ]]
+- [[#РАБОТА С ТОМАМИ]]
+- [[#СЕТИ]]
+- [[ЧИСТКА МУСОРА]]
 ---
 
 ## DOCKER RUN
-
----
 
 ```shell
 docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
@@ -41,7 +35,7 @@ docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
 --restart=[no/on-failure/always/unless-stopped] — варианты перезапуска контейнера при крэше
 ```
 
-Подробнее про [опции запуска тут](https://docs.docker.com/engine/reference/commandline/run/)
+#### Подробнее про [опции запуска тут](https://docs.docker.com/engine/reference/commandline/run/)
 
 ```shell
 # Для больше читабельности можно при переносе строки ставить символ \
@@ -52,8 +46,6 @@ docker run \
 ---
 
 ## ПРОСТЫЕ ДЕЙСТВИЯ С КОНТЕЙНЕРАМИ
-
----
 
 ### Создание контейнера
 
@@ -82,8 +74,6 @@ docker update --cpu-shares 512 -m 300M <CONTAINERNAME or CONTAINERID>
 ---
 
 ## ЗАПУСК И ОСТАНОВКА КОНТЕЙНЕРОВ
-
----
 
 ### Запуск остановленного контейнера
 
@@ -145,8 +135,6 @@ docker attach <CONTAINERNAME>
 
 ## ИНФОРМАЦИЯ О КОНТЕЙНЕРЕ
 
----
-
 ### Работающие контейнеры
 
 ```shell
@@ -207,8 +195,6 @@ docker diff <CONTAINERNAME or CONTAINERID>
 
 ## РАБОТА С КОНТЕЙНЕРАМИ
 
----
-
 ### Зайти в уже запущенный контейнер.
 
 (точнее выполнить команду внутри контейнера)
@@ -234,8 +220,6 @@ docker cp some_files.conf docker_container:/home/docker/
 ---
 
 ## РАБОТА С REGISTRY
-
----
 
 ### Вход в реестр
 
@@ -290,8 +274,6 @@ docker push eon01/nginx localhost:5000/myadmin/nginx
 ---
 
 ## РАБОТА С ОБРАЗАМИ
-
----
 
 ### Список образов
 
@@ -385,8 +367,6 @@ docker push eon01/nginx
 
 ## РАБОТА С ТОМАМИ
 
----
-
 ### Немного теории:
 
 - Если монтируем пустой том с хоста, а в контейнере уже есть файлы, то они скопируются в том
@@ -433,8 +413,6 @@ docker volume rm <VOLUME-NAME>
 ---
 
 ## СЕТИ
-
----
 
 ### Создание сети
 
@@ -497,8 +475,6 @@ docker network disconnect MyOverlayNetwork nginx
 ---
 
 ## ЧИСТКА МУСОРА
-
----
 
 ### Показать образы и контейнеры
 
@@ -606,3 +582,8 @@ docker system prune
 # По умолчанию для Docker 17.06.1+ тома не удаляются. Чтобы удалились и они тоже:
 docker system prune --volumes
 ```
+
+
+---
+
+
