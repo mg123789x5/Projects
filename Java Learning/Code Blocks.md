@@ -69,8 +69,10 @@ public class FileReadExample {
         }
     }
 }
+```
 
-Чтение через Scanner
+Чтение через **Scanner**
+```java
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -86,6 +88,8 @@ public class FileReadExample {
         }
     }
 }
+```
+---
 
 
 

@@ -114,4 +114,76 @@ Collections.frequency(list, 3);
 
 ---
 
+## Какие методы самые важные и используются чаще всего?
+
+В Java есть ключевые методы, которые активно применяются в программировании. Их можно разделить на общие методы Object, методы строк, коллекций и потоков.  
+
+🟠Важные методы **Object** (базовые для всех классов)  
+
+Каждый класс в Java наследует Object, поэтому эти методы важны для любой программы. 
+```java
+class Person {
+    String name;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return name.equals(person.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+}
+```
+
+🟠Важные методы **String** (работа со строками)  
+Строки в Java неизменяемы, поэтому методы создают новые объекты.  
+```java
+String text = "  Hello, Java!  ";
+System.out.println(text.trim().toUpperCase()); // "HELLO, JAVA!"
+```
+
+Важные методы **List**, **Set**, **Map** (коллекции)  
+```java
+List<String> names = new ArrayList<>();
+names.add("Alice");
+names.add("Bob");
+System.out.println(names.get(0)); // Alice
+```
+```java
+Set<String> uniqueNames = new HashSet<>();
+uniqueNames.add("Alice");
+uniqueNames.add("Alice");
+System.out.println(uniqueNames.size()); // 1 (дубликат не добавился)
+```
+
+🚩Методы **Map** (**HashMap**, **TreeMap**)
+```java
+Map<String, Integer> ages = new HashMap<>();
+ages.put("Alice", 25);
+ages.put("Bob", 30);
+System.out.println(ages.get("Alice")); // 25
+```
+
+**Stream API** позволяет работать с данными декларативно.  
+```java
+List<String> names = List.of("Alice", "Bob", "Charlie");
+
+names.stream()
+     .filter(name -> name.startsWith("A"))
+     .map(String::toUpperCase)
+     .forEach(System.out::println);
+```
+
+---
+
+
+
+
+
+
 
