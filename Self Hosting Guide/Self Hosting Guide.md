@@ -1,17 +1,20 @@
 #SelfHosting
 
 
->A guide for getting started with Self Hosting devices including software and hardware that will make you a better and more efficient Self Hosting.
+
+![[Pasted image 20250710094953.png]]
+
+---
+## [Self Hosting Guide](https://github.com/mikeroyal/Self-Hosting-Guide) 
+*A guide for getting started with Self Hosting devices including software and hardware that will make you a better and more efficient Self Hosting.*
+
+---
+
+ >**Note 1: You can easily convert this markdown file to a PDF in [VSCode](https://code.visualstudio.com/) using this handy extension [Markdown PDF](https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf).**
  
- **Note 1: You can easily convert this markdown file to a PDF in [VSCode](https://code.visualstudio.com/) using this handy extension [Markdown PDF](https://marketplace.visualstudio.com/items?itemName=yzane.markdown-pdf).**
- 
- **Note 2: This guide will constantly be updated with new info as becomes available and please feel to make an [issue](https://github.com/mikeroyal/Self-Hosting-Guide/issues) if you think something should be added.**
- 
- <p align="center">
- <img src="https://user-images.githubusercontent.com/45159366/152699307-1c4ebfcd-a2b0-456c-9a84-01ac255e3782.png">
-  <br />
-</p>
- 
+ >**Note 2: This guide will constantly be updated with new info as becomes available and please feel to make an [issue](https://github.com/mikeroyal/Self-Hosting-Guide/issues) if you think something should be added.**
+
+---
 # Table of Contents
 
 1. [Getting Started with Self-Hosting](https://github.com/mikeroyal/Self-Hosting-Guide#getting-started-with-self-hosting)
@@ -194,17 +197,11 @@
 
 Most self-hosted software can be installed using [Docker](https://en.wikipedia.org/wiki/Docker_(software)), a packaging system which allows software to bundle their configuration and dependencies and isolate them from your operating system.  Software using docker can be installed using the command line or via graphical interfaces such as [Portainer](https://github.com/portainer/portainer).  Software is installed with Docker by downloading an image file containing the application, then creating a copy that sets up its own dependencies and configuration within what is called a container.  Without containers you would often need to install different versions of the same programming languages or tools to satisfy the dependencies for the software you want to use which can get complicated.
 
- <p align="center">
- <img src="https://user-images.githubusercontent.com/45159366/152699308-36691800-8078-4af3-9d5c-711da4e9b26e.png">
-  <br />
-</p>
+ ---
 
 ## Tools for Self-Hosting
-[Back to the Top](https://github.com/mikeroyal/Self-Hosting-Guide#table-of-contents)
-
 ### Containers
 
-[Back to the Top](#table-of-contents)
 
 **Container** is a standard unit of software that packages up code and all its dependencies(including CPU, memory, file storage, and network connections) so the application runs quickly and reliably from one computing environment to another. 
 
