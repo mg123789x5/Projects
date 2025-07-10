@@ -231,89 +231,88 @@ docker tag my-image localhost:5000/my-image
 docker push localhost:5000/my-image
 ```
 
+
 ## Запускаем монолит на сервере без Docker
 
 В README приложения можно найти подробную инструкцию как развернуть его на сервере. Для примера возьмём README монолитного приложения, который мы намеренно сократили:
 
 **Установка пакетов:**
-
->`sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
+```sh
+sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
 libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-xz-utils tk-dev libffi-dev liblzma-dev python-openssl git npm redis-server vim ffmpeg`
+xz-utils tk-dev libffi-dev liblzma-dev python-openssl git npm redis-server vim ffmpeg
+```
 
 **Установка pyenv:**
-
-```
-$ curl https://pyenv.run | bash$ echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc && \echo 'eval "$(pyenv init -)"' >> ~/.bashrc && \echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc && source ~/.bashrc
+```sh
+$ curl https://pyenv.run | bash
+$ echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc && \
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc && \
+echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc && source ~/.bashrc
 ```
 
 **Установки Python 3.6.9:**
-
-```
+```sh
 pyenv install 3.6.9
 ```
 
 Если установлена версия Ubuntu 20+ и возникла ошибка при попытке установки, применить следующие команды:
-
-```
+```sh
 $ sudo apt install clang -y$ CC=clang pyenv install 3.6.9
 ```
 
 **Создание виртуального окружения:**
-
-```
+```sh
 $ pyenv virtualenv 3.6.9 cpa-project
 ```
 
 **Активация виртуального окружения:**
-
-```
+```sh
 $ pyenv activate cpa-project
 ```
 
 **Установка NodeJS 8.11.3:**
-
+```sh
+$ npm i n -g
+$ sudo n install 8.11.3
+$ sudo n # в появившемся окне выбираем версию 8.11.3
 ```
-$ npm i n -g$ sudo n install 8.11.3$ sudo n # в появившемся окне выбираем версию 8.11.3
-```
 
-**Клонирование проекта**
-
-```
+**Клонирование проекта**:
+```sh
    $ git clone git@github.com:User/cpa-project.git
 ```
 
 **Переходим в проект:**
-
-```
+```sh
 $ cd cpa-project
 ```
 
 **Установка зависимостей python (убедитесь, что виртуальное окружение активно):**
-
-```
-$ pip install -U pip$ pip install -r requirements.txt
+```sh
+$ pip install -U pip
+$ pip install -r requirements.txt
 ```
 
 **Установка зависимостей NodeJS:**
-
-```
+```sh
 $ npm install
 ```
 
 **Проводим миграции для базы данных и создаем тестовые данные:**
-
-```
-$ python manage.py migrate$ python manage.py generate_test_data
+```sh
+$ python manage.py migrate
+$ python manage.py generate_test_data
 ```
 
 #### Сборка клиентской части
 
-```
+```sh
 $ npm run watch # Для разработки с автоматическим ребилдом$ npm run build # Для продакшена
 ```
 
 Как видите, для запуска монолита на сервере прописываются и выполняются множества команд, а процесс требует участия человека.
+
 
 ## Собираем тот же проект в Docker
 
@@ -321,29 +320,262 @@ $ npm run watch # Для разработки с автоматическим р
 
 Compose-файл
 
+```yaml
+yaml
+version: '3'
+services:
+ {stage}-project-ex--app:
+   container_name: {stage}-project-ex--app
+   build:
+     context: ..
+     dockerfile: Dockerfile
+   env_file:
+     - ".env.{stage}"
+   networks:
+     - stage_project-ex_network
+   depends_on:
+     - {stage}-project-ex--redis
+     - {stage}-project-ex--clickhouse
+     - {stage}-project-ex--postgres
+     - {stage}-project-ex--mailhog
+   volumes:
+     - ..:/app/
+     - ./crontab.docker:/etc/cron.d/crontab.docker
+   command: /start
+   labels:
+     - "traefik.enable=true"
+     - "traefik.http.routers.{stage}_fp_app.rule=Host(`web.{stage}.project-ex.io`)"
+     - "traefik.http.services.{stage}_fp_app.loadbalancer.server.port=8000"
+     - "traefik.http.routers.{stage}_fp_app.entrypoints=websecure"
+     - "traefik.http.routers.{stage}_fp_app.tls.certresolver=stage_project-ex_app"
+
+ {stage}-project-ex--app-cron:
+   container_name: {stage}-project-ex--app-cron
+   build:
+     context: ..
+     dockerfile: Dockerfile
+   env_file:
+     - ".env.{stage}"
+   networks:
+     - stage_project-ex_network
+   depends_on:
+     - {stage}-project-ex--redis
+     - {stage}-project-ex--clickhouse
+     - {stage}-project-ex--postgres
+     - {stage}-project-ex--mailhog
+   volumes:
+     - ..:/app/
+     - ./crontab.docker:/etc/cron.d/crontab.docker
+   command: sh -c "printenv >> /etc/environment && crontab /etc/cron.d/crontab.docker && cron -f"
+
+ {stage}-project-ex--front:
+   container_name: {stage}-project-ex--front
+   build: ./frontend-builder
+   env_file:
+     - ".env.{stage}"
+   networks:
+     - stage_project-ex_network
+   depends_on:
+     - {stage}-project-ex--app
+   volumes:
+     - ..:/app/
+
+ {stage}-project-ex--clickhouse:
+   container_name: {stage}-project-ex--clickhouse
+   image: yandex/clickhouse-server:20.4.6.53
+   env_file:
+     - ".env.{stage}"
+   networks:
+     - stage_project-ex_network
+   volumes:
+     - /home/project-ex/stands/{stage}/docker_data/clickhouse/data:/var/lib/clickhouse
+     - ./docker_data/clickhouse/schema:/var/lib/clickhouse/schema
+     - ./docker_data/clickhouse/users.xml:/etc/clickhouse-server/users.xml
+     - ./docker_data/clickhouse/project-ex.xml:/etc/clickhouse-server/users.d/default-user.xml
+   labels:
+     - "traefik.enable=true"
+     - "traefik.tcp.routers.{stage}_fp_clickhouse.rule=HostSNI(`*`)"
+     - "traefik.tcp.routers.{stage}_fp_clickhouse.entryPoints=clickhouse"
+     - "traefik.tcp.routers.{stage}_fp_clickhouse.service={stage}_fp_clickhouse"
+     - "traefik.tcp.services.{stage}_fp_clickhouse.loadbalancer.server.port=8123"
+
+ {stage}-project-ex--postgres:
+   container_name: {stage}-project-ex--postgres
+   image: postgres:13.11-alpine
+   env_file:
+     - ".env.{stage}"
+   networks:
+     - stage_project-ex_network
+   stdin_open: true
+   tty: true
+   volumes:
+     - {stage}-project-ex--postgres:/var/lib/postgresql
+   labels:
+     - "traefik.enable=true"
+     - "traefik.tcp.routers.postgres.rule=HostSNI(`*`)"
+     - "traefik.tcp.routers.postgres.entryPoints=postgres"
+     - "traefik.tcp.routers.postgres.service=postgres"
+     - "traefik.tcp.services.postgres.loadbalancer.server.port=5432"
+
+ {stage}-project-ex--redis:
+   container_name: {stage}-project-ex--redis
+   image: redis:alpine
+   env_file:
+     - ".env.{stage}"
+   networks:
+     - stage_project-ex_network
+   volumes:
+     - {stage}-project-ex--redis:/data
+
+ {stage}-project-ex--mailhog:
+   container_name: {stage}-project-ex--mailhog
+   image: mailhog/mailhog:v1.0.1
+   env_file:
+     - ".env.{stage}"
+   networks:
+     - stage_project-ex_network
+   labels:
+     - "traefik.enable=true"
+     - "traefik.http.routers.{stage}_fp_mailhog.rule=Host(`mail.{stage}.project-ex.io`)"
+     - "traefik.http.services.{stage}_fp_mailhog.loadbalancer.server.port=8025"
+     - "traefik.http.routers.{stage}_fp_mailhog.entrypoints=websecure"
+     - "traefik.http.routers.{stage}_fp_mailhog.tls.certresolver=stage_project-ex_app"
+
+volumes:
+ {stage}-project-ex--postgres:
+   name: {stage}-project-ex--postgres
+   driver: local
+ {stage}-project-ex--redis:
+   name: {stage}-project-ex--project-ex
+   driver: local
+
+networks:
+ stage_project-ex_network:
+   external: true
+   name: stage_project-ex_network
 ```
 
+
+**Docker Compose** — инструмент для запуска многоконтейнерных приложений в Docker. В .yaml-файле указываются все необходимые настройки и команды. Запуск контейнеров из compose-файла производится командой `<docker-compose up>`.
+
+В .yaml-файле мы можем увидеть из каких контейнеров `<container_name>` (и каких версий) запускается наше ранее монолитное приложение. А ключевое слово `{stage}`— это ветка в GitLab, из которой будет подниматься контейнер. По желанию, на одном сервере мы можем запускать контейнеры из разных веток.
+
+От того, что мы разбили приложение на микросервисы, оно не перестало быть монолитным. Микросервисность продукта закладывается на стадии его проектирования и создания, когда каждая задача выделяется в отдельный сервис.
+
+Строка в compose `<dockerfile: Dockerfile>` собирает наш контейнер. В файле содержатся такие инструкции:
+```dockerfile
+dockerfile
+FROM python:3.6.9-buster
+
+ENV DJANGO_SETTINGS=advgame.local_settings
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+ # dependencies for building Python packages
+ && apt-get install -y build-essential \
+ # psycopg2 dependencies
+ && apt-get install -y libpq-dev \
+ # Translations dependencies
+ && apt-get install -y gettext \
+ # Cron
+ && apt-get install -y cron \
+ # Vim
+ && apt-get install -y vim \
+ # cleaning up unused files
+ && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+ && rm -rf /var/lib/apt/lists/*
+
+# Set timezone
+ENV TZ=Europe/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Have to invalidate cache here because Docker is bugged and doesn't invalidate cache
+# even if requirements.txt did change
+
+
+ADD ../requirements.txt /requirements.txt
+RUN pip install -r /requirements.txt
+
+COPY ./docker-compose/start.sh /start
+RUN chmod +x /start
+
+# Copy hello-cron file to the cron.d directory
+COPY ./docker-compose/crontab.docker /etc/cron.d/crontab.docker
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/crontab.docker
+# Apply cron job
+RUN crontab /etc/cron.d/crontab.docker
+
+COPY . /app
+
+WORKDIR /app
 ```
 
-**Docker Compose** — инструмент для запуска многоконтейнерных приложений в Docker. В .yaml-файле указываются все необходимые настройки и команды. Запуск контейнеров из compose-файла производится командой <docker-compose up>.
+Далее мы написали `<make>`-файл который позволит нам управлять конфигурированием проекта:
 
-В .yaml-файле мы можем увидеть из каких контейнеров _<container_name>_ (и каких версий) запускается наше ранее монолитное приложение. А ключевое слово _{stage}_  — это ветка в GitLab, из которой будет подниматься контейнер. По желанию, на одном сервере мы можем запускать контейнеры из разных веток.
+```sh
+make
+dir=${CURDIR}
+project=project-ex
+env=local
+interactive:=$(shell [ -t 0 ] && echo 1)
+ifneq ($(interactive),1)
+  optionT=-T
+endif
 
-_От того, что мы разбили приложение на микросервисы, оно не перестало быть монолитным. Микросервисность продукта закладывается на стадии его проектирования и создания, когда каждая задача выделяется в отдельный сервис._
+uid=$(shell id -u)
+gid=$(shell id -g)
+# Команда для docker-compose exec
+c=
+# Параметр для docker-compose exec
+p=
 
-Строка в compose <dockerfile: Dockerfile> собирает наш контейнер. В файле содержатся такие инструкции:
+dc:
+  @docker-compose -f ./docker-compose/$(env).yml --env-file=./docker-compose/.env.$(env) $(cmd)
 
+compose-logs:
+  @make dc cmd="logs" env="$(env)"
+
+cp-env:
+  [ -f ./docker-compose/.env.$(env) ] && echo ".env.$(env) file exists" || cp ./docker-compose/.env.example ./docker-compose/.env.$(env)
+  sed -i "s/{stage}/$(env)/g" ./docker-compose/.env.$(env)
+  @if [ "$(env)" = "local" ] ; then \
+     sed -i "s/{domain}/ma.local/g" ./docker-compose/.env.$(env) ; \
+  fi;
+  @if [ "$(env)" = "dev" ] ; then \
+     sed -i "s/{domain}/dev.project-ex.io/g" ./docker-compose/.env.$(env) ; \
+  fi;
+
+cp-yml:
+  @if [ ! "$(env)" = "local" ] ; then \
+     [ -f ./docker-compose/$(env).yml ] && echo "$(env).yml file exists" || cp ./docker-compose/stage.example.yml ./docker-compose/$(env).yml ; \
+     sed -i "s/{stage}/$(env)/g" ./docker-compose/$(env).yml; \
+  fi;
+
+init:
+  docker network ls | grep stage_project-ex_network > /dev/null || docker network create stage_project-ex_network
+  @make cp-env
+  @make cp-yml
+  [ -f ./docker-compose/.env.$(env) ] && echo ".env.$(env) file exists" || cp ./docker-compose/.env.$(env).example ./docker-compose/.env.$(env)
+  @make dc cmd="up -d"
+  @make dc cmd="start $(env)-$(project)--postgres" env="$(env)"
+  sleep 5 && cat ./docker-compose/docker_data/pgsql/data/init_dump.sql | docker exec -i $(env)-$(project)--postgres psql -U project-ex
+  @make dc cmd="exec $(env)-$(project)--app python ./manage.py migrate" env="$(env)"
+  @make ch-restore env="$(env)"
+  @make build-front env="$(env)"
+  @make collect-static env="$(env)"
+
+create_test_db:
+  @make dc cmd="exec $(env)-$(project)--postgres dropdb --if-exists -U project-ex project-ex_test" env="$(env)" > /dev/null
+  @make dc cmd="exec $(env)-$(project)--postgres createdb -U project-ex project-ex_test" env="$(env)"
+  cat ./docker-compose/docker_data/pgsql/data/init_dump.sql | docker exec -i $(env)-$(project)--postgres psql -U project-ex project-ex_test
+
+bash-front:
+  @make dc cmd="exec $(env)-$(project)--front sh" env="$(env)"
 ```
-dockerfileFROM python:3.6.9-busterENV DJANGO_SETTINGS=advgame.local_settingsARG DEBIAN_FRONTEND=noninteractiveRUN apt-get update \ # dependencies for building Python packages && apt-get install -y build-essential \ # psycopg2 dependencies && apt-get install -y libpq-dev \ # Translations dependencies && apt-get install -y gettext \ # Cron && apt-get install -y cron \ # Vim && apt-get install -y vim \ # cleaning up unused files && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \ && rm -rf /var/lib/apt/lists/*# Set timezoneENV TZ=Europe/MoscowRUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone# Have to invalidate cache here because Docker is bugged and doesn't invalidate cache# even if requirements.txt did changeADD ../requirements.txt /requirements.txtRUN pip install -r /requirements.txtCOPY ./docker-compose/start.sh /startRUN chmod +x /start# Copy hello-cron file to the cron.d directoryCOPY ./docker-compose/crontab.docker /etc/cron.d/crontab.docker# Give execution rights on the cron jobRUN chmod 0644 /etc/cron.d/crontab.docker# Apply cron jobRUN crontab /etc/cron.d/crontab.dockerCOPY . /appWORKDIR /app
-```
 
-Далее мы написали <make>-файл который позволит нам управлять конфигурированием проекта:
-
-```
-makedir=${CURDIR}project=project-exenv=localinteractive:=$(shell [ -t 0 ] && echo 1)ifneq ($(interactive),1)  optionT=-Tendifuid=$(shell id -u)gid=$(shell id -g)# Команда для docker-compose execc=# Параметр для docker-compose execp=dc:  @docker-compose -f ./docker-compose/$(env).yml --env-file=./docker-compose/.env.$(env) $(cmd)compose-logs:  @make dc cmd="logs" env="$(env)"cp-env:  [ -f ./docker-compose/.env.$(env) ] && echo ".env.$(env) file exists" || cp ./docker-compose/.env.example ./docker-compose/.env.$(env)  sed -i "s/{stage}/$(env)/g" ./docker-compose/.env.$(env)  @if [ "$(env)" = "local" ] ; then \     sed -i "s/{domain}/ma.local/g" ./docker-compose/.env.$(env) ; \  fi;  @if [ "$(env)" = "dev" ] ; then \     sed -i "s/{domain}/dev.project-ex.io/g" ./docker-compose/.env.$(env) ; \  fi;cp-yml:  @if [ ! "$(env)" = "local" ] ; then \     [ -f ./docker-compose/$(env).yml ] && echo "$(env).yml file exists" || cp ./docker-compose/stage.example.yml ./docker-compose/$(env).yml ; \     sed -i "s/{stage}/$(env)/g" ./docker-compose/$(env).yml; \  fi;init:  docker network ls | grep stage_project-ex_network > /dev/null || docker network create stage_project-ex_network  @make cp-env  @make cp-yml  [ -f ./docker-compose/.env.$(env) ] && echo ".env.$(env) file exists" || cp ./docker-compose/.env.$(env).example ./docker-compose/.env.$(env)  @make dc cmd="up -d"  @make dc cmd="start $(env)-$(project)--postgres" env="$(env)"  sleep 5 && cat ./docker-compose/docker_data/pgsql/data/init_dump.sql | docker exec -i $(env)-$(project)--postgres psql -U project-ex  @make dc cmd="exec $(env)-$(project)--app python ./manage.py migrate" env="$(env)"  @make ch-restore env="$(env)"  @make build-front env="$(env)"  @make collect-static env="$(env)"create_test_db:  @make dc cmd="exec $(env)-$(project)--postgres dropdb --if-exists -U project-ex project-ex_test" env="$(env)" > /dev/null  @make dc cmd="exec $(env)-$(project)--postgres createdb -U project-ex project-ex_test" env="$(env)"  cat ./docker-compose/docker_data/pgsql/data/init_dump.sql | docker exec -i $(env)-$(project)--postgres psql -U project-ex project-ex_testbash-front:  @make dc cmd="exec $(env)-$(project)--front sh" env="$(env)"
-```
-
-<make> создает своего рода короткий алиас команд для управления сервисами. В нём можно инициализировать проект, пересоздать базу, собрать фронт и так далее. Эти же команды мы будем использовать в GitLab CI файле. Далее мы запускаем команду _<make init>_ для инициализации проекта.
+`<make>` создает своего рода короткий алиас команд для управления сервисами. В нём можно инициализировать проект, пересоздать базу, собрать фронт и так далее. Эти же команды мы будем использовать в GitLab CI файле. Далее мы запускаем команду `<make init>` для инициализации проекта.
 
 ---
 
@@ -351,6 +583,44 @@ makedir=${CURDIR}project=project-exenv=localinteractive:=$(shell [ -t 0 ] && ech
 
 Compose-файл
 
+```yaml
+yaml
+version: '3'
+services:
+ stage-project-ex--traefik:
+   image: "traefik:v3.0.0-beta2"
+   container_name: "stage-project-ex--traefik"
+   command:
+     - "--log.level=DEBUG"
+     - "--providers.docker=true"
+     - "--providers.docker.exposedbydefault=false"
+     - "--entrypoints.web.address=:80"
+     - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+     - "--entrypoints.websecure.address=:443"
+     - "--entrypoints.postgres.address=:5432"
+     - "--entrypoints.clickhouse.address=:8123"
+     - "--entrypoints.mongo.address=:27017"
+     - "--certificatesresolvers.stage_project-ex_app.acme.httpchallenge=true"
+     - "--certificatesresolvers.stage_project-ex_app.acme.httpchallenge.entrypoint=web"
+     - "--certificatesresolvers.stage_project-ex_app.acme.email=it@email-ex.com"
+     - "--certificatesresolvers.stage_project-ex_app.acme.storage=/letsencrypt/acme.json"
+   restart: always
+   ports:
+     - 80:80
+     - 443:443
+     - 5432:5432
+     - 8123:8123
+     - 27017:27017
+   networks:
+     - stage_project-ex_network
+   volumes:
+     - "/opt/letsencrypt:/letsencrypt"
+     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+networks:
+ stage_project-ex_network:
+   external: true
+   name: stage_project-ex_network
 ```
 
 ```
