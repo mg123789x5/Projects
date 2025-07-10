@@ -1,10 +1,8 @@
 
 
+# [Большая шпаргалка по Docker: как распилить монолитный проект на части](https://habr.com/ru/companies/kokocgroup/articles/802039/)
 
-
-# Большая шпаргалка по Docker: как распилить монолитный проект на части
-
-
+---
 ## Туториал
 
 Погружение в мир контейнеризации с докером — это путь к оптимизации развёртыванию приложений, а также ключ к упрощению жизни разработчиков и системных администраторов. Меня зовут Андрей Аверков, в IT c 2008 начинал пусть с аналитика-проектировщика IT систем, 11 лет в роли разработчика и последние годы на руководящих должностях. Сейчас я тимлид команды разработки из 9 человек в группе компаний Kokoc Group. Мы занимаемся созданием и поддержкой CPA платформ (gdeslon.ru, fxpartners.ru, ads.mobisharks.com), а также проектом по генерации лендингов - lpgenerator.ru. Отдел разработки тесно сотрудничает с отделом IT. И эту статью мне помогал писать [@Egorov_Ilja](https://habr.com/users/egorov_ilja), он руководит IT-отделом в группе компаний Kokoc Group с 2013 года, а вообще в компании уже более 16 лет. В общем, у нас довольно большой опыт в разделении продуктов на части, поэтому, сегодня мы собрали самое основное и необходимое для работы с Docker. В нашей шпаргалке вы найдете все необходимое для успешного старта с докером: от базовых концепций и установки до продвинутых техник работы с контейнерами.
@@ -623,15 +621,13 @@ networks:
    name: stage_project-ex_network
 ```
 
-```
-
 ### Настройка портов
 
-В первом compose-файле ничего не сказано про порты. Основная причина в том, что обращаться к проекту мы будем по доменному имени с помощью [Traefik](https://hub.docker.com/_/traefik). Приложения работает отдельно от compose-файлов и версий проекта: о появлении новых контейнеров Traefik узнаёт от Docker Daemon, а конфигурация для приложения прописывается в compose-файле после ключевого слова _<labels>_.
+В первом compose-файле ничего не сказано про порты. Основная причина в том, что обращаться к проекту мы будем по доменному имени с помощью [Traefik](https://hub.docker.com/_/traefik). Приложения работает отдельно от compose-файлов и версий проекта: о появлении новых контейнеров Traefik узнаёт от Docker Daemon, а конфигурация для приложения прописывается в compose-файле после ключевого слова `<labels>`.
 
 Traefik проксирует трафик к контейнеру на основе hostname (не только по HTTP/HTTPS), запрашивает LE-сертификат, сам его продлевает. При этом указывать, на какой IP или hostname проксировать или менять конфиг Traefik не нужно.
 
-_Если мы поднимаем локальные контейнеры с локальным доменным именем, запросить LE-сертификат не получится. Поэтому с web придётся общаться по HTTP, а в Traefik отключить редирект на HTTPS_
+Если мы поднимаем локальные контейнеры с локальным доменным именем, запросить LE-сертификат не получится. Поэтому с web придётся общаться по HTTP, а в Traefik отключить редирект на HTTPS
 
 Версия образа traefik:v3.0.0-beta2 выбрана не случайно, она поддерживает различные доменные имена для маршрутизации к контейнерам PostgreSQL. В примере выше использование beta2 не обязательно, так как любой запрос на порт 5432 будет проксироваться на единственный контейнер с PostgreSQL.
 
@@ -641,50 +637,203 @@ _Если мы поднимаем локальные контейнеры с л�
 
 Этот процесс необходим исключительно для обеспечения внешнего доступа к контейнерам PostgreSQL напрямую. При использовании Docker-сети, в которой контейнеры находятся, использование Traefik становится излишним.
 
-В <compose traefik> добавляем:
-
+В `<compose traefik>` добавляем:
+```yaml
+yaml
+    command:
+      - "--providers.file.filename=/conf/dynamic-conf.yml"
+    volumes:
+      - "./tls:/tls"
+      - "./conf:/conf"
 ```
-yaml    command:      - "--providers.file.filename=/conf/dynamic-conf.yml"    volumes:      - "./tls:/tls"      - "./conf:/conf"
-```
 
-В conf/dynamic-conf.yml прописываем файлы сертификатов:
-
-```
-yamltls:  certificates:    - certFile: /tls/something.com.pem      keyFile: /tls/something.com.key
+В `conf/dynamic-conf.yml` прописываем файлы сертификатов:
+```yaml
+tls:
+  certificates:
+    - certFile: /tls/something.com.pem
+      keyFile: /tls/something.com.key
 ```
 
 В директорию tls/ кладём файлы Wildcard-сертификата, созданные Bash-скриптом  <[mkcert.sh](http://mkcert.sh/) [something.com](http://something.com/)>:
 
-```
-bash#!/usr/bin/env bashset -euo pipefailIFS=$'\n\t' DOMAIN_NAME=$1if [ ! -f $1.key ]; then  if [ -n "$1" ]; then    echo "You supplied domain $1"    SAN_LIST="[SAN]\nsubjectAltName=DNS:localhost, DNS:*.localhost, DNS:*.$DOMAIN_NAME, DNS:$DOMAIN_NAME"    printf $SAN_LIST  else    echo "No additional domains will be added to cert"    SAN_LIST="[SAN]\nsubjectAltName=DNS:localhost, DNS:*.localhost"    printf $SAN_LIST  fi  openssl req \    -newkey rsa:2048 \    -x509 \    -nodes \    -keyout "$1.key" \    -new \    -out "$1.crt" \    -subj "/CN=compose-dev-tls Self-Signed" \    -reqexts SAN \    -extensions SAN \    -config <(cat /etc/ssl/openssl.cnf <(printf $SAN_LIST)) \    -sha256 \    -days 3650  echo "new TLS self-signed certificate created"else  echo "certificate files already exist. Skipping"fi
+```sh
+bash
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+ DOMAIN_NAME=$1
+
+if [ ! -f $1.key ]; then
+
+  if [ -n "$1" ]; then
+    echo "You supplied domain $1"
+    SAN_LIST="[SAN]\nsubjectAltName=DNS:localhost, DNS:*.localhost, DNS:*.$DOMAIN_NAME, DNS:$DOMAIN_NAME"
+    printf $SAN_LIST
+  else
+    echo "No additional domains will be added to cert"
+    SAN_LIST="[SAN]\nsubjectAltName=DNS:localhost, DNS:*.localhost"
+    printf $SAN_LIST
+  fi
+
+  openssl req \
+    -newkey rsa:2048 \
+    -x509 \
+    -nodes \
+    -keyout "$1.key" \
+    -new \
+    -out "$1.crt" \
+    -subj "/CN=compose-dev-tls Self-Signed" \
+    -reqexts SAN \
+    -extensions SAN \
+    -config <(cat /etc/ssl/openssl.cnf <(printf $SAN_LIST)) \
+    -sha256 \
+    -days 3650
+
+  echo "new TLS self-signed certificate created"
+
+else
+
+  echo "certificate files already exist. Skipping"
+
+fi
 ```
 
-Правим <labels> контейнера postgres в compose-файле:
+Правим `<labels>` контейнера postgres в compose-файле:
 
+```yaml
+yaml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.qa222_postgres.rule=HostSNI(`qa222.something.com`)"
+      - "traefik.tcp.routers.qa222_postgres.entryPoints=postgres"
+      - "traefik.tcp.routers.qa222_postgres.service=qa222_postgres"
+      - "traefik.tcp.services.qa222_postgres.loadbalancer.server.port=5432"
+      - "traefik.tcp.routers.qa222_postgres.tls=true"
 ```
-yaml    labels:      - "traefik.enable=true"      - "traefik.tcp.routers.qa222_postgres.rule=HostSNI(`qa222.something.com`)"      - "traefik.tcp.routers.qa222_postgres.entryPoints=postgres"      - "traefik.tcp.routers.qa222_postgres.service=qa222_postgres"      - "traefik.tcp.services.qa222_postgres.loadbalancer.server.port=5432"      - "traefik.tcp.routers.qa222_postgres.tls=true"
-```
+
 
 ### CI/CD проекта
 
-![](https://habrastorage.org/r/w1560/getpro/habr/upload_files/6e6/098/ecc/6e6098ecc0ff5542f8506d69d6d328eb.jpg)
-
-Ниже приложили наш GitLab CI файл, в нем мы можем видеть ранее озвученные <make>-команды. Для того, чтобы развернуть проект на сервере, был настроен ci/cd, который позволяет:
-
+Ниже приложили наш GitLab CI файл, в нем мы можем видеть ранее озвученные `<make>`-команды. Для того, чтобы развернуть проект на сервере, был настроен ci/cd, который позволяет:
 - проверить качество кода;
     
 - запустить тесты;
     
 - собрать билды образов докера;
     
-- доставить всё это до сервера.
-    
+- доставить всё это до сервера.    
 
 Данный ci использует алиасы make файла, про который мы писали выше.
 
+```yaml
+yaml
+variables:
+ APP4_ENV: "gitlab"
+
+default:
+ tags:
+   #gtilab runner tag
+   - dev-project-ex-1
+
+stages:
+ - ci
+ - delivery
+ - build
+ - deploy
+
+.before_script_template: &build_test-integration
+ before_script:
+ - echo "Prepare job"
+ - sed -i "s!env=local!env=${APP4_ENV}!" ./Makefile
+ - make cp-env
+ - make cp-yml
+ - make up
+
+.verify-code: &config_template
+ stage: ci
+ <<: *build_test-integration
+ only:
+   refs:
+     - merge_requests
+     - develop
+     - master
+
+Linter:
+ <<: *config_template
+ script:
+   - make build
+   - make linter
+
+Tests:
+ <<: *config_template
+ script:
+   - make tests
+
+Delivery:
+ stage: delivery
+ script:
+   - echo "Rsync from $CI_PROJECT_DIR"
+   - sudo rm -rf "/home/project-ex/stands/dev/project-ex/!\(static|node_modules\)"
+   - sed -i "s!env=local!env=dev!" ./Makefile
+   - rsync -av --delete-before --no-perms --no-owner --no-group
+     --exclude "node_modules/"
+     --exclude "__pycache__/"
+     --exclude "logs/"
+     --exclude "docker-compose/docker_data/clickhouse/data/"
+     $CI_PROJECT_DIR/ /home/project-ex/stands/dev/project-ex
+ only:
+   - develop
+ except:
+   - master
+
+Build:
+ stage: build
+ script:
+   - echo "cd /home/project-ex/stands/dev/project-ex"
+   - cd /home/project-ex/stands/dev/project-ex
+   - echo "make cp-env"
+   - make cp-env
+   - echo "cp-yml"
+   - make cp-yml
+   - echo "build"
+   - make build
+ only:
+   - develop
+ except:
+   - master
+
+Build-front:
+ stage: build
+ script:
+   - echo "cd /home/project-ex/stands/dev/project-ex"
+   - cd /home/project-ex/stands/dev/project-ex
+   - echo "build-front"
+   - make build-front
+ only:
+   changes:
+     - '*.js'
+     - '*.css'
+     - '*.less'
+   refs:
+     - develop
+     - master
+
+Deploy:
+ stage: deploy
+ script:
+   - cd /home/project-ex/stands/dev/project-ex
+   - mkdir -p logs
+   - make restart
+   - make migrate
+   - make collect-static
+ only:
+   - develop
+ except:
+   - master
 ```
-yamlvariables: APP4_ENV: "gitlab"default: tags:   #gtilab runner tag   - dev-project-ex-1stages: - ci - delivery - build - deploy.before_script_template: &build_test-integration before_script: - echo "Prepare job" - sed -i "s!env=local!env=${APP4_ENV}!" ./Makefile - make cp-env - make cp-yml - make up.verify-code: &config_template stage: ci <<: *build_test-integration only:   refs:     - merge_requests     - develop     - masterLinter: <<: *config_template script:   - make build   - make linterTests: <<: *config_template script:   - make testsDelivery: stage: delivery script:   - echo "Rsync from $CI_PROJECT_DIR"   - sudo rm -rf "/home/project-ex/stands/dev/project-ex/!\(static|node_modules\)"   - sed -i "s!env=local!env=dev!" ./Makefile   - rsync -av --delete-before --no-perms --no-owner --no-group     --exclude "node_modules/"     --exclude "__pycache__/"     --exclude "logs/"     --exclude "docker-compose/docker_data/clickhouse/data/"     $CI_PROJECT_DIR/ /home/project-ex/stands/dev/project-ex only:   - develop except:   - masterBuild: stage: build script:   - echo "cd /home/project-ex/stands/dev/project-ex"   - cd /home/project-ex/stands/dev/project-ex   - echo "make cp-env"   - make cp-env   - echo "cp-yml"   - make cp-yml   - echo "build"   - make build only:   - develop except:   - masterBuild-front: stage: build script:   - echo "cd /home/project-ex/stands/dev/project-ex"   - cd /home/project-ex/stands/dev/project-ex   - echo "build-front"   - make build-front only:   changes:     - '*.js'     - '*.css'     - '*.less'   refs:     - develop     - masterDeploy: stage: deploy script:   - cd /home/project-ex/stands/dev/project-ex   - mkdir -p logs   - make restart   - make migrate   - make collect-static only:   - develop except:   - master
-```
+
 
 ## Плюсы и минусы Docker
 
