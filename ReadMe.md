@@ -14,6 +14,7 @@
 | 8     | [[_start Java EE-WebDev \| Java NetProg TCP/IP]]              |
 | 9     | [[_start Java MyPhotos \| Java EE - MyPhotos]]                |
 | 10    | [[_start Docker и Docker Compose \| Docker и Docker Compose]] |
+| 11    | [[Self Hosting Guide]]                                        |
 |       |                                                               |
 
 
