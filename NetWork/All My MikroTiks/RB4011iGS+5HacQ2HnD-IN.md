@@ -7,6 +7,9 @@ Gigabit Ethernet
 Must*
 
 ---
+#### [Базовая настройка маршрутизатора MikroTik для начинающих.](https://youtu.be/w0T9sxwSJ2Y?si=ulZNo9XXdEzEW505)
+
+
 1) eth1 MAC Addtess: 
    Original: F4:1E:57:43:FE:B8,
    TP-Link: CC:32:E5:17:A9:2D 
@@ -82,7 +85,14 @@ Must*
 			3) Con-on State: invalid
 			4) Action: Action:drop
 
-8) System -> Password:
+8) System 
+	1) Password
+	2) Packages: 
+		1) check, downloadand install
+	3) RouterBOARD
+		1) upgrade
+
+
 
 
 
