@@ -56,6 +56,20 @@ Must*
 	11) Hide SSID
 
 7) WireWall:
-	1) IP->Firewall->Filter Rules
-	2) 
-
+	1) IP->Firewall->Filter Rules -> Add
+	2) General: 
+		1) RULE 1 allow:
+			1) Chain: Input
+			2) In Interface: ether1
+			3) Con-on State: established, related
+			4) Action: Action:accept
+		2) RULE 2 block:
+			1) Chain: Input
+			2) In Interface: ether1
+			3) Con-on State: invali
+			4) Action: Action:drop
+		3) RULE 3 block:
+			1) Chain: Forward
+			2) In Interface: ether1
+			3) Con-on State: invali
+			4) Action: Action:accept
