@@ -18,7 +18,7 @@ Must*
 
 2) *Bridge:*
 	1) **Add** new -> bridge1
-	2) **Ports** -> Add eth ports (1...5)
+	2) **Ports** -> Add eth ports (2...5)
 
 3) *Set IP bridge1:*
 	**IP** -> Addresses -> Add:
