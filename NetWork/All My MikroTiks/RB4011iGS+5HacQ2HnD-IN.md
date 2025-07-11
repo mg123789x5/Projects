@@ -13,8 +13,17 @@ Must*
    Teminal:`interface ethernet set mac-address=CC:32:E5:17:A9:2D ether1`
 
 2) *Bridge:*
-	1) Add new -> bridge1
-	2) Ports -> Add eth ports
+	1) **Add** new -> bridge1
+	2) **Ports** -> Add eth ports (1...5)
+
+3) *Set IP bridge1:*
+	**IP** -> Addresses -> Add:
+		1) Address: 192.168.0.1/24
+		2) Interface: bridge1
+
+4) **ISP IP**:
+	**IP** -> DHCP Cl. -> Add -> DHCP:
+		Interface: ether1
 
 
 
