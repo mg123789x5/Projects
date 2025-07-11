@@ -30,7 +30,20 @@ Must*
 		1) IP->DHCP server
 		2) DHCP -> DHCP Setup
 		3) DHCP Interface: bridge1
+		4) DHCP Address Space: 192.168.0.0/24
+		5) GW for DHCP Net: 192.168.0.1
+		6) Addresses to Give: 192.168.0.2-192.168.0.254
+		7) DNS: 212.7.0.33, 212.7.9.34
+		8) Lease Time: 00:30:00
+		
+	2) Internet for Cl. (NAT):
+		1) IP -> Firewall -> NAT -> Add
+		2) Chain: srcnat
+		3) Out Intercafe: ether1
+		4) Action -> Action: masquerade
 
-
+6) Cl. WiFi:
+	1) Interfaces -> Interface -> wlan -> Enable
+	2) Wireless -> WiFi interface
 
 
