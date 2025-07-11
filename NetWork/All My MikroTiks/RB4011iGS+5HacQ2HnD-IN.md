@@ -66,10 +66,47 @@ Must*
 		2) RULE 2 block:
 			1) Chain: Input
 			2) In Interface: ether1
-			3) Con-on State: invali
+			3) Con-on State: invalid
 			4) Action: Action:drop
-		3) RULE 3 block:
+		3) RULE 3 forward:
 			1) Chain: Forward
+			2) Con-on State: established, related
+			3) Action: Action:accept
+		4) RULE 4 forward:
+			1) Chain: Forward
+			2) Con-on State: invalid
+			3) Action: Action:drop
+		5) RULE 2 block:
+			1) Chain: Input
 			2) In Interface: ether1
-			3) Con-on State: invali
-			4) Action: Action:accept
+			3) Con-on State: invalid
+			4) Action: Action:drop
+
+8) System -> Password:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
