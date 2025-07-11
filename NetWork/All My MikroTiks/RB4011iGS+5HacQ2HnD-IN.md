@@ -43,7 +43,19 @@ Must*
 		4) Action -> Action: masquerade
 
 6) Cl. WiFi:
-	1) Interfaces -> Interface -> wlan -> Enable
-	2) Wireless -> WiFi interface
+	1) Interfaces -> Interface -> wlan2 -> Enable
+	2) WirelessTables -> Sec.Profiles ->default
+	3) Mode: dynamic keys
+	4) WPA2PSK; KeySet `****`
+	5) WiFi interface -> wlan2 up -> Wireless
+	6) Mode: ap bridge
+	7) Band: B/G/N
+	8) Chanel Width: 20/40Mhz eC
+	9) freq: auto (2447)
+	10) SSID: ´_´
+	11) Hide SSID
 
+7) WireWall:
+	1) IP->Firewall->Filter Rules
+	2) 
 
