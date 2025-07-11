@@ -10,7 +10,8 @@ Must*
 #### [Базовая настройка маршрутизатора MikroTik для начинающих.](https://youtu.be/w0T9sxwSJ2Y?si=ulZNo9XXdEzEW505)
 
 
-1) eth1 MAC Addtess: 
+1) [Как изменит mac адрес на роутере MikroTik](https://youtu.be/Va80KAHxfL0?si=v1Z_PgaFXgGncwOq)
+   eth1 MAC Addtess: 
    Original: F4:1E:57:43:FE:B8,
    TP-Link: CC:32:E5:17:A9:2D 
    Teminal:`interface ethernet set mac-address=CC:32:E5:17:A9:2D ether1`
