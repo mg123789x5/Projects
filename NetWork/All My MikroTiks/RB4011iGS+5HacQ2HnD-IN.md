@@ -25,6 +25,11 @@ Must*
 	**IP** -> DHCP Cl. -> Add -> DHCP:
 		Interface: ether1
 
+5) Cl. Setup:
+	1) DHCP server:
+		1) IP->DHCP server
+		2) DHCP -> DHCP Setup
+		3) DHCP Interface: bridge1
 
 
 
